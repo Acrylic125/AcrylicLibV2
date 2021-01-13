@@ -1,11 +1,12 @@
+package com.acrylic
+
 import java.lang.Integer.min
 import java.util.*
 import java.util.function.Consumer
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashSet
-import kotlin.math.floor
-import kotlin.math.max
+import kotlin.math.*
 
 interface Paginated<T> {
 
@@ -44,6 +45,7 @@ interface Paginated<T> {
         for (i in startIndex..endIndex)
             action.accept(collection.elementAt(i))
     }
+
 }
 
 fun interface InitialPaginatedFunction {
