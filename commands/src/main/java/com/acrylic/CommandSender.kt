@@ -2,6 +2,9 @@ package com.acrylic
 
 interface CommandSender {
 
-    fun getRead(str: String)
+    fun forceCommandExecute(str: String)
+
+    fun commandExecuteCheck(input: String)
 
 }
+

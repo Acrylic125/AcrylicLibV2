@@ -1,32 +1,33 @@
 package com.acrylic
 
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
-abstract class Command(command: String) : CommandBase(command) {
+abstract class Command(command: String) {
 
-    fun isThisCommand(input: CommandInput): Boolean {
-        return input.id == this.id
+    val command: String = command.split(ARGUMENT_SEPARATOR)[0]
+    val id: String = toComparableCommandStr(this.command)
+    val aliases: List<String>
+    val arguments: List<Command>
+
+    init {
+        this.aliases = ArrayList()
+        this.arguments = ArrayList()
     }
+
+    fun isThisCommand(commandInput: CommandInput): Boolean {
+        return commandInput.id == this.id
+    }
+
+    abstract fun executeCommand(commandExecuted: CommandExecuted)
+
+    abstract fun preconditions(commandExecuted: CommandExecuted): Boolean
 
 }
 
+val ARGUMENT_SEPARATOR: Pattern = Pattern.compile(" ")
 
-abstract class Argument(command: String) : CommandBase(command) {
-
-    fun isThisArgument(input: CommandInput): Boolean {
-        return input.id == this.id
-    }
-
-}
-
-abstract class CommandBase(val command: String) {
-
-    val id: String = this.command.split(" ")[0].toUpperCase(Locale.ENGLISH)
-    val permissions: List<String> = ArrayList()
-    val arguments: List<Argument> = ArrayList()
-    val aliases: List<String> = ArrayList()
-
-    abstract fun execute(commandExecuted: CommandExecuted)
-
+fun toComparableCommandStr(cmd: String): String {
+    return cmd.toUpperCase(Locale.ENGLISH)
 }

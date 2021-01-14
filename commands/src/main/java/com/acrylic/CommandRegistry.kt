@@ -1,45 +1,46 @@
 package com.acrylic
 
-import java.util.*
-import kotlin.collections.ArrayList
+interface CommandRegistry<T : Command> {
 
-interface CommandRegistry {
+    fun getAllCommands(): Collection<T>
 
-    val registered: Collection<Command>
+    fun register(command: T)
 
-    fun register(command: Command)
+    fun unregister(command: T)
 
-    fun unregister(command: Command)
+    fun unregister(cmd: String)
 
-    fun getCommand(id: String): Command? {
-        val specifiedID = id.toUpperCase(Locale.ENGLISH)
-        for (cmd in registered) {
-            if (specifiedID == cmd.id)
-                return cmd
+    fun getCommand(cmd: String): T?
+
+}
+
+class SimpleCommandRegistry(val registered: MutableList<Command>) : CommandRegistry<Command> {
+
+    override fun register(command: Command) {
+        registered.add(command)
+    }
+
+    override fun unregister(command: Command) {
+        registered.remove(command)
+    }
+
+    override fun unregister(cmd: String) {
+        val command = getCommand(cmd)
+        if (command != null)
+            unregister(command)
+    }
+
+    override fun getCommand(cmd: String): Command? {
+        val comparableCMD = toComparableCommandStr(cmd)
+        for (command in registered) {
+            if (command.id == comparableCMD)
+                return command
         }
         return null
     }
 
-}
-
-class SimpleCommandRegistry : CommandRegistry {
-
-    override val registered: MutableList<Command>
-
-    constructor(registered: MutableList<Command>) {
-        this.registered = registered
-    }
-
-    constructor() {
-        this.registered = ArrayList()
-    }
-
-    override fun register(command: Command) {
-        this.registered.add(command)
-    }
-
-    override fun unregister(command: Command) {
-        this.registered.remove(command)
+    override fun getAllCommands(): Collection<Command> {
+        return registered
     }
 
 }
