@@ -4,17 +4,29 @@ import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
-class CommandExecuted(val input: CommandInput) {
+open class CommandExecuted(val sender: CommandSender, val input: CommandInput) {
+
+    var srcIndex = 0
+
+    fun pushToNextArgument() {
+        srcIndex++
+    }
+
+    fun getArgument(i: Int): String {
+        return input.getArgument(srcIndex + i)
+    }
+
+
 
 }
 
 data class CommandInput(val input: String) {
 
-    val mainCommand: String
+    val id: String
     val fullCommand: List<String> = input.split(" ")
 
     init {
-        this.mainCommand = fullCommand[0].toUpperCase(Locale.ENGLISH)
+        this.id = fullCommand[0].toUpperCase(Locale.ENGLISH)
     }
 
     fun getArgument(index: Int): String {
