@@ -4,20 +4,26 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
-abstract class Command(command: String) {
+abstract class Command(command: String, aliases: Array<String>, val arguments: Array<Command>) {
 
     val command: String = command.split(ARGUMENT_SEPARATOR)[0]
     val id: String = toComparableCommandStr(this.command)
-    val aliases: List<String>
-    val arguments: List<Command>
+    val aliases: Array<String> = emptyArray()
 
     init {
-        this.aliases = ArrayList()
-        this.arguments = ArrayList()
+        for ((i, alias) in aliases.withIndex()) {
+            this.aliases[i] = toComparableCommandStr(alias)
+        }
     }
 
     fun isThisCommand(commandInput: CommandInput): Boolean {
-        return commandInput.id == this.id
+        if (commandInput.id == this.id)
+            return true
+        for (alias in aliases) {
+            if (commandInput.id == alias)
+                return true
+        }
+        return false
     }
 
     abstract fun executeCommand(commandExecuted: CommandExecuted)

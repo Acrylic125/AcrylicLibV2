@@ -16,6 +16,8 @@ interface CommandRegistry<T : Command> {
 
 class SimpleCommandRegistry(val registered: MutableList<Command>) : CommandRegistry<Command> {
 
+    constructor() : this(ArrayList())
+
     override fun register(command: Command) {
         registered.add(command)
     }
